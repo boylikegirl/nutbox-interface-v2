@@ -231,6 +231,34 @@
               </button>
             </div>
           </b-form-group>
+          <!-- community blog -->
+          <b-form-group
+            v-if="!isEdit"
+            label-cols-md="2"
+            content-cols-md="8"
+            :label="$t('community.communityBlog')"
+          >
+            <div class="d-flex">
+              <div class="c-input-group">
+                <b-form-input
+                  :disabled="true"
+                  type="text"
+                  :placeholder="form.blogTag || $t('community.blogTag')"
+                >
+                </b-form-input>
+              </div>
+              <button class="primary-btn ml-2" v-if="state === 'create'" style="width: 8rem" @click="showBlogTip = true">
+                {{ $t('community.createBlog') }}
+              </button>
+              <button class="primary-btn ml-2" v-if="state === 'connectSteem'" style="width: 8rem" @click="showSteemLogin = true">
+                {{ $t('wallet.connectSteem') }}
+              </button>
+              <button class="primary-btn ml-2" v-if="state === 'publish'" style="width: 8rem" :disabled='publishingBlog' @click="publishBlog">
+                <b-spinner small type="grow" v-show="publishingBlog" />
+                {{ $t('community.publishBlog') }}
+              </button>
+            </div>
+          </b-form-group>
           <!-- commit button -->
           <b-form-group
             v-if="isEdit"
@@ -445,12 +473,127 @@
         </div>
       </div>
     </b-modal>
+    <!-- crop pic tip -->
+    <b-modal
+      v-model="cropperModal"
+      modal-class="cropper-modal"
+      size="lg"
+      centered
+      hide-header
+      hide-footer
+      no-close-on-backdrop>
+      <div class="cropper-container">
+        <vueCropper
+          ref="cropper"
+          :infoTrue="true"
+          :autoCrop="true"
+          :img="cropperImgSrc"
+          :fixedNumber="cropFixedNumber"
+          :autoCropWidth="cropImgSize[0]"
+          :fixed="true"
+          :centerBox="true"
+          outputType="png"
+        ></vueCropper>
+      </div>
+      <div class="crop-btn-group">
+        <button class="primary-btn" @click="onCancel">取消</button>
+        <button class="primary-btn" @click="completeCropAndUpload">完成</button>
+      </div>
+    </b-modal>
+    <!-- create blog tip -->
+    <b-modal
+      v-model="showBlogTip"
+      modal-class="custom-modal"
+      size="m"
+      centered
+      hide-header
+      hide-footer
+      no-close-on-backdrop
+    >
+      <div class="tip-modal">
+        <div class="font20 font-bold text-center mb-4">
+          {{ $t("community.createBlog") }}
+        </div>
+        <div class="input-group-box mb-4">
+          <div class="input-box flex-between-center">
+            <p>
+              {{ $t('community.createBlogMemo') }}
+            </p>
+          </div>
+        </div>
+        <div class="c-text-info">
+          <span>{{ $t('community.communityName') }}:</span>
+          <p>{{ form.name }}</p>
+        </div>
+        <div class="c-text-info">
+          <span>{{ $t('community.blogTag') }}:</span>
+          <p>{{ blogTag }}</p>
+        </div>
+        <div class="c-text-info">
+          <span>{{ $t('community.blogMainPassword') }}:</span>
+          <p>{{ blogMainPassword }}</p>
+        </div>
+        <div class="flex-between-center" style="gap: 2rem">
+          <button
+            class="primary-btn primary-btn-outline"
+            @click="showBlogTip = false"
+            :disabled="creatingBlog"
+          >
+            <b-spinner small type="grow" v-show="creatingBlog" />
+            {{ $t('commen.cancel') }}
+          </button>
+          <button class="primary-btn" @click="createBlog" :disabled="creatingBlog">
+            <b-spinner small type="grow" v-show="creatingBlog" />
+            {{ $t("commen.confirm") }}
+          </button>
+        </div>
+      </div>
+      <div class="tip-modal">
+        <div class="font20 font-bold text-center mb-4" style="margin-top:1.2rem">
+          {{ $t("community.bindBlog") }}
+        </div>
+         <div class="input-group-box mb-4">
+          <div class="input-box flex-between-center">
+            <p>
+              {{ $t('community.bindBlogMemo') }}
+            </p>
+          </div>
+        </div>
+        <div class="input-group-box mb-4">
+          <div class="input-box flex-between-center">
+            <div class="c-input-group">
+            <input
+              style="flex: 1"
+              v-model="inputBlogTag"
+              :placeholder="$t('community.inputBlogTag')"
+            />
+            </div>
+          </div>
+        </div>
+        <div class="flex-between-center" style="gap: 2rem">
+          <button
+            class="primary-btn primary-btn-outline"
+            @click="showBlogTip = false"
+            :disabled="creatingBlog"
+          >
+            <b-spinner small type="grow" v-show="creatingBlog" />
+            {{ $t('commen.cancel') }}
+          </button>
+          <button class="primary-btn" @click="bindBlog" :disabled="creatingBlog">
+            <b-spinner small type="grow" v-show="creatingBlog" />
+            {{ $t("commen.confirm") }}
+          </button>
+        </div>
+      </div>
+    </b-modal>
+    <Login type='STEEM' v-if="showSteemLogin" @hideMask="showSteemLogin = false" />
   </div>
 </template>
 
 <script>
 import { uploadImage } from "@/utils/helper";
 import UploadLoading from "@/components/ToolsComponents/UploadLoading";
+import Login from '@/components/ToolsComponents/Login'
 import {
   completeCommunityInfo,
   getMyCommunityInfo,
@@ -459,24 +602,28 @@ import {
   approveCommunityBalance,
   setDevAddress,
   setDevRatio,
-  monitorCommunity
+  monitorCommunity,
+  publishBlog
 } from "@/utils/web3/community";
 import { getCToken } from "@/utils/web3/asset"
 import { handleApiErrCode, sleep } from "@/utils/helper";
 import { mapState, mapGetters } from "vuex";
 import BN from 'bn.js'
-import Step from "@/components/ToolsComponents/Step";
+import Step from '@/components/ToolsComponents/Step'
+import { VueCropper } from 'vue-cropper'
+import { generateNewHiveAccount, generatePassword, createNewCommunity, setCommunityInfo, subscribeCommunity } from '@/utils/steem/steem'
 
 export default {
-  name: "EditCommunityInfo",
-  components: { UploadLoading, Step },
-  data() {
+  name: 'EditCommunityInfo',
+  components: { UploadLoading, Step, VueCropper, Login },
+  data () {
     return {
       logo: null,
       coverImg: null,
       chargeValue: 0,
       inputDevAddress: '',
       inputDevRatio: '',
+      inputBlogTag:'',
       form: {
         id: "",
         name: "",
@@ -485,6 +632,7 @@ export default {
         icon: "",
         poster: "",
         pools: [],
+        blogTag: ''
       },
       logoPreviewSrc: "",
       logoUploadLoading: false,
@@ -498,20 +646,33 @@ export default {
       showChargeTip: false,
       showDevAddressTip: false,
       showDevRatioTip: false,
+      showBlogTip: false,
       uploading: false,
       approving:false,
       charging: false,
+      publishingBlog: false,
+      creatingBlog: false,
       cToken: {},
       isMintable: true,
       cTokenAddress: '',
       updatingAddress: false,
       updatingDevRatio: false,
-      showStep: false
-    };
+      showStep: false,
+      cropperModal: false,
+      cropperImgSrc: '',
+      cropFixedNumber: [1, 1],
+      cropImgSize: [200, 200],
+      blogTag: '',
+      blogMainPassword: '',
+      blogBtnName: '',
+      state: '',
+      showSteemLogin: false
+    }
   },
   computed: {
     ...mapState("web3", ["communityBalance", "userBalances", "ctokenApprovement", "devAddress", "devRatio"]),
     ...mapGetters('web3', ['createState']),
+    ...mapState("steem", ['steemAccount']),
     communityBalanceValue(){
       if (this.communityBalance){
         return (this.communityBalance.toString() / 1e18).toFixed(6)
@@ -531,10 +692,23 @@ export default {
       // type : null , create, edit
       this.isEdit = !!newValue;
     },
+    steemAccount(newValue, oldValue) {
+      if (newValue && !oldValue) {
+        this.state = 'create'
+      }
+    }
   },
   async mounted() {
     this.type = this.$route.query.type;
     this.isEdit = !!this.type;
+    // create hive account
+    try{
+      this.blogTag = await generateNewHiveAccount()
+      this.blogMainPassword = generatePassword()
+    }catch(e) {
+      console.log('generateNewHiveAccount fail',e)
+    }
+
     try {
       const communityInfo = await getMyCommunityInfo();
       if (!communityInfo) {
@@ -544,17 +718,25 @@ export default {
       }
       this.form = {...communityInfo};
       if (!communityInfo.name) this.showStep = true;
+      this.form.blogTag = communityInfo.blogTag;
+      if (this.form.blogTag){
+        this.state = ''
+      }else{
+        if(!this.steemAccount){
+          this.state = 'connectSteem'
+        }else{
+          this.state = 'create'
+        }
+      }
       this.canEdit = true;
       const cToken = await getCToken(communityInfo.id)
       this.cToken = cToken
-      console.log('ctoken', cToken);
       this.isMintable = cToken.isMintable
       this.cTokenAddress = cToken.address
       if (!communityInfo.name) {
         this.form.id = communityInfo.id;
         return;
       }
-
     } catch (e) {
       handleApiErrCode(e, (info, params) => {
         this.$bvToast.toast(info, params);
@@ -562,47 +744,77 @@ export default {
     }
   },
   methods: {
-    async updateLogo(file) {
-      if (!this.logo) return;
-      this.logoUploadLoading = true;
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (res) => {
-        this.logoPreviewSrc = res.target.result;
-      };
-      try {
-        this.form.icon = await uploadImage(this.logo);
-        this.logoUploadLoading = false;
-      } catch (e) {
-        this.$bvToast.toast(this.$t("tip.picUploadFail"), {
-          title: this.$t("tip.tips"),
-          autoHideDelay: 5000,
-          variant: "warning",
-        });
-        this.logo = null;
-        this.form.icon = null;
-        this.logoUploadLoading = false;
+    onCancel () {
+      this.cropperModal = false
+      if (this.logoUploadLoading) {
+        this.logo = null
+        this.logoUploadLoading = false
+      }
+      if (this.coverUploadLoading) {
+        this.coverImg = null
+        this.coverUploadLoading = false
       }
     },
-    async updateCover(file) {
-      if (!this.coverImg) return;
-      this.coverUploadLoading = true;
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
+    completeCropAndUpload () {
+      this.cropperModal = false
+      this.$refs.cropper.getCropData((data) => {
+        if (this.logoUploadLoading) this.logoPreviewSrc = data
+        if (this.coverUploadLoading) this.coverPreviewSrc = data
+      })
+      this.$refs.cropper.getCropBlob(async (data) => {
+        if (this.logoUploadLoading) {
+          try {
+            this.form.icon = await uploadImage(data)
+            this.logoUploadLoading = false
+          } catch (e) {
+            this.$bvToast.toast(this.$t('tip.picUploadFail'), {
+              title: this.$t('tip.tips'),
+              autoHideDelay: 5000,
+              variant: 'warning'
+            })
+            this.logo = null
+            this.form.icon = null
+            this.logoUploadLoading = false
+          }
+        }
+        if (this.coverUploadLoading) {
+          try {
+            this.form.poster = await uploadImage(data)
+            this.coverUploadLoading = false
+          } catch (e) {
+            this.$bvToast.toast(this.$t('tip.picUploadFail'), {
+              title: this.$t('tip.tips'),
+              autoHideDelay: 5000,
+              variant: 'warning'
+            })
+            this.coverImg = null
+            this.form.poster = null
+          }
+        }
+      })
+    },
+    async updateLogo (file) {
+      if (!this.logo) return
+      this.logoUploadLoading = true
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
       reader.onload = (res) => {
-        this.coverPreviewSrc = res.target.result;
-      };
-      try {
-        this.form.poster = await uploadImage(this.coverImg);
-        this.coverUploadLoading = false;
-      } catch (e) {
-        this.$bvToast.toast(this.$t("tip.picUploadFail"), {
-          title: this.$t("tip.tips"),
-          autoHideDelay: 5000,
-          variant: "warning",
-        });
-        this.coverImg = null;
-        this.form.poster = null;
+        this.cropperImgSrc = res.target.result
+        this.cropperModal = true
+        this.cropFixedNumber = [1, 1]
+        this.cropImgSize = [200, 200]
+      }
+    },
+    async updateCover (file) {
+      if (!this.coverImg) return
+      this.coverUploadLoading = true
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = (res) => {
+        this.cropperImgSrc = res.target.result
+        this.cropperModal = true
+        this.cropFixedNumber = [30, 7]
+        this.cropImgSize = [1200, 280]
       }
     },
     async approve() {
@@ -627,7 +839,8 @@ export default {
     async charge() {
       try{
         this.charging = true;
-        if (Number(this.chargeValue) <= 0) {
+        const chargeValue = Number(this.chargeValue)
+        if (!chargeValue || chargeValue <= 0) {
           this.$bvToast.toast(this.$t('error.inputError'), {
             title: this.$t("tip.tips"),
             autoHideDelay: 5000,
@@ -695,8 +908,25 @@ export default {
     valideInfos() {
       const { name, website, description, icon, poster } = this.form;
       let tips = null;
+      if (website && website.length > 0) {
+        const regUrl = '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]';
+        const res = website.match(regUrl)
+        console.log({res});
+        if (!res) {
+          tips = this.$t("tip.needRightUrl")
+          this.$bvToast.toast(tips, {
+            title: this.$t("tip.tips"),
+            autoHideDelay: 5000,
+            variant: "warning",
+          });
+          return false;
+        }
+      }
+
       if (!name || name.length === 0) {
         tips = this.$t("tip.needName");
+      } else if(name && name.length > 16){
+        tips = this.$t("tip.communityNameLimit", {count: 16})
       } else if (!description || description.length === 0) {
         tips = this.$t("tip.needDescription");
       } else if (!icon || icon.length === 0) {
@@ -740,6 +970,86 @@ export default {
         this.uploading = false;
       }
     },
+    async bindBlog() {
+      const reg = /^hive-[1-3]\d{3,6}$/
+      const res = reg.test(this.inputBlogTag)
+      if (!res){
+        this.$bvToast.toast(this.$t('tip.inputRightBlogTag'), {
+          title: this.$t('tip.tips'),
+          variant:'warning'
+        })
+        return;
+      }
+      try{
+        this.creatingBlog = true
+        await publishBlog(this.inputBlogTag)
+        this.state = ''
+        this.form.blogTag = this.inputBlogTag;
+        this.$bvToast.toast(this.$t('community.publishBlogSuccess'), {
+          title: this.$t('tip.success'),
+          variant: 'success'
+        })
+        this.showBlogTip = false
+      }catch(e){
+        handleApiErrCode(e, (info, params) => {
+          this.$bvToast.toast(info, params);
+        });
+      }finally{
+        this.creatingBlog = false;
+      }
+    },
+    async createBlog(){
+      try{
+        this.creatingBlog = true
+        // create new account
+        const res = await createNewCommunity(this.steemAccount, this.blogTag, this.blogMainPassword)
+        if(res && res.success){
+          // set community info
+          setCommunityInfo(this.steemAccount, this.blogTag, this.blogMainPassword, this.form.name, this.form.description)
+          // subscribe account
+          const res = await subscribeCommunity(this.steemAccount, this.blogTag)
+          if (res && res.success){
+            this.showBlogTip = false;
+            this.$bvToast.toast(this.$t('tip.createBlogSuccess'), {
+              title: this.$t('tip.success'),
+              variant: 'success'
+            })
+            // update
+            this.state = 'publish'
+            this.form.blogTag = this.blogTag
+          }else if(res && !res.success){
+            this.$bvToast.toast(res.message, {
+              title: res.error,
+              variant: 'error'
+            })
+          }
+        }
+      }catch(e){
+        console.log('create account fail', e);
+        handleApiErrCode(e, (info, params) => {
+          this.$bvToast.toast(info, params);
+        });
+      }finally{
+        this.creatingBlog = false;
+      }
+    },
+    async publishBlog(){
+      try{
+        this.publishingBlog = true
+        await publishBlog(this.blogTag)
+        this.state = ''
+        this.$bvToast.toast(this.$t('community.publishBlogSuccess'), {
+          title: this.$t('tip.success'),
+          variant: 'success'
+        })
+      }catch(e){
+        handleApiErrCode(e, (info, params) => {
+          this.$bvToast.toast(info, params);
+        });
+      }finally{
+        this.publishingBlog = false
+      }
+    },
     gotoCreate() {
       this.$router.push("/community/create-economy");
     },
@@ -776,6 +1086,36 @@ export default {
     transform: translate(-50%, -50%);
     font-size: 1rem;
     text-align: center;
+  }
+}
+.close-icon {
+  position: absolute;
+  right: -1.4rem;
+  top: -1.4rem;
+  @include icon(1.4rem, 1.4rem);
+  background-image: url("~@/static/images/circle-close.png");
+}
+.cropper-container {
+  height: 500px;
+  max-height: 100%;
+}
+.crop-btn-group {
+  padding: 1.2rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  button {
+    box-shadow: none;
+    width: fit-content;
+    padding: 0 2rem;
+  }
+}
+@media (max-width: 576px) {
+  .close-icon {
+    top: auto;
+    bottom: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 </style>

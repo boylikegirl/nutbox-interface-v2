@@ -9,6 +9,11 @@ import {
   BACKEND_API_URL
 } from '../config'
 
+// ============================================ NPS ============================================
+const API_URL ='https://service.nutbox.io'
+
+export const getProposal = async (params) => get(API_URL + '/nps/getProposal', params)
+
 // ============================================ crowdstaking ============================================ 
 /**
  * 获取所有的投票的卡片
@@ -80,6 +85,8 @@ export const insertCommunity = async (params) => post(BACKEND_API_URL + '/commun
 
 export const updateCommunity = async (params) => put(BACKEND_API_URL + '/community/update', params)
 
+export const updateBlogTag = async (params) => put(BACKEND_API_URL + '/community/updateBlogTag', params)
+
 export const insertToken = async (params) => post(BACKEND_API_URL + '/token/insert', params)
 
 export const getAllTokens = async () => get(BACKEND_API_URL + '/token/get')
@@ -91,3 +98,5 @@ export const updatePoolInfo = async (params) => put(BACKEND_API_URL + '/pool/upd
 export const getAllPools = async () => get(BACKEND_API_URL + '/pool/getAll')
 
 export const getAllParachain = async () => get(BACKEND_API_URL + '/parachain/getall')
+
+export const getPricesOnCEX = async () => get('https://api.binance.com/api/v3/ticker/price')

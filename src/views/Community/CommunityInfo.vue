@@ -1,11 +1,16 @@
 <template>
-  <div class="page-view-content" >
+  <div class="page-view-content">
     <div class="scroll-content container">
       <div class="view-top-header">
         <Step v-show="showStep" :current-step="2"></Step>
         <div class="flex-between-center w-100">
           <div
-            class="font20" :class="$route.query.type==='create'?'page-back-text-icon':'page-title-line'"
+            class="font20"
+            :class="
+              $route.query.type === 'create'
+                ? 'page-back-text-icon'
+                : 'page-title-line'
+            "
             style="line-height: 1rem"
             @click="isEdit ? (type = null) : $router.back()"
           >
@@ -51,7 +56,7 @@
                 v-model="form.website"
                 :placeholder="$t('community.inputLink')"
               ></b-form-input>
-              <span>{{ $t('cl.optional') }}</span>
+              <span>{{ $t("cl.optional") }}</span>
             </b-form-group>
             <!-- community description -->
             <b-form-group
@@ -94,7 +99,9 @@
                         src="~@/static/images/add.svg"
                         alt=""
                       />
-                      <div class="add-text">{{ $t("community.uploadLogo") }}</div>
+                      <div class="add-text">
+                        {{ $t("community.uploadLogo") }}
+                      </div>
                     </template>
                   </div>
                 </template>
@@ -133,11 +140,11 @@
                     <template v-if="form.poster">
                       <img class="cover-preview" :src="form.poster" alt="" />
                       <div v-if="isEdit" class="edit-mask">
-                      <span
-                      >{{ $t("community.edit") }}<br />{{
-                          $t("community.poster")
-                        }}</span
-                      >
+                        <span
+                          >{{ $t("community.edit") }}<br />{{
+                            $t("community.poster")
+                          }}</span
+                        >
                       </div>
                     </template>
                     <template v-else>
@@ -228,7 +235,7 @@
             :disabled="uploading"
           >
             <b-spinner small type="grow" v-show="uploading" />
-            {{ $t('commen.cancel') }}
+            {{ $t("commen.cancel") }}
           </button>
         </div>
       </div>
@@ -241,12 +248,13 @@
       centered
       hide-header
       hide-footer
-      no-close-on-backdrop>
+      no-close-on-backdrop
+    >
       <div class="cropper-container">
         <canvas id="cropper-canvas"></canvas>
         <vueCropper
           ref="cropper"
-          :class="logoUploadLoading?'cropper-rounded-circle':''"
+          :class="logoUploadLoading ? 'cropper-rounded-circle' : ''"
           :infoTrue="true"
           :autoCrop="true"
           :img="cropperImgSrc"
@@ -276,20 +284,20 @@ import {
 } from "@/utils/web3/community";
 import { handleApiErrCode, sleep } from "@/utils/helper";
 import { mapGetters } from "vuex";
-import Step from '@/components/ToolsComponents/Step'
-import { VueCropper } from 'vue-cropper'
+import Step from "@/components/ToolsComponents/Step";
+import { VueCropper } from "vue-cropper";
 
 export default {
-  name: 'EditCommunityInfo',
+  name: "EditCommunityInfo",
   components: { UploadLoading, Step, VueCropper },
-  data () {
+  data() {
     return {
       logo: null,
       coverImg: null,
       chargeValue: 0,
-      inputDevAddress: '',
-      inputDevRatio: '',
-      inputBlogTag:'',
+      inputDevAddress: "",
+      inputDevRatio: "",
+      inputBlogTag: "",
       form: {
         id: "",
         name: "",
@@ -298,7 +306,7 @@ export default {
         icon: "",
         poster: "",
         pools: [],
-        blogTag: ''
+        blogTag: "",
       },
       logoPreviewSrc: "",
       logoUploadLoading: false,
@@ -314,40 +322,46 @@ export default {
       showDevRatioTip: false,
       showBlogTip: false,
       uploading: false,
-      approving:false,
+      approving: false,
       charging: false,
       publishingBlog: false,
       creatingBlog: false,
       cToken: {},
       isMintable: true,
-      cTokenAddress: '',
+      cTokenAddress: "",
       updatingAddress: false,
       updatingDevRatio: false,
       showStep: false,
       cropperModal: false,
-      cropperImgSrc: '',
+      cropperImgSrc: "",
       cropFixedNumber: [1, 1],
       cropImgSize: [200, 200],
-      blogTag: '',
-      blogMainPassword: '',
-      blogBtnName: '',
-      state: '',
-      showSteemLogin: false
-    }
+      blogTag: "",
+      blogMainPassword: "",
+      blogBtnName: "",
+      state: "",
+      showSteemLogin: false,
+    };
   },
   computed: {
-    ...mapGetters('web3', ['createState'])
+    ...mapGetters("web3", ["createState"]),
   },
   watch: {
     type(newValue, oldValue) {
       // type : null , create, edit
       this.isEdit = !!newValue;
-    }
+    },
   },
   async mounted() {
     this.type = this.$route.query.type;
     this.isEdit = !!this.type;
-
+    // create hive account
+    try {
+      this.blogTag = await generateNewHiveAccount();
+      this.blogMainPassword = generatePassword();
+    } catch (e) {
+      console.log("generateNewHiveAccount fail", e);
+    }
     try {
       const communityInfo = await getMyCommunityInfo();
       if (!communityInfo) {
@@ -356,7 +370,7 @@ export default {
         return;
       }
       this.canEdit = true;
-      this.form = {...communityInfo};
+      this.form = { ...communityInfo };
       if (!communityInfo.name) {
         this.form.id = communityInfo.id;
         return;
@@ -368,120 +382,130 @@ export default {
     }
   },
   methods: {
-    onCancel () {
-      this.cropperModal = false
+    onCancel() {
+      this.cropperModal = false;
       if (this.logoUploadLoading) {
-        this.logo = null
-        this.logoUploadLoading = false
+        this.logo = null;
+        this.logoUploadLoading = false;
       }
       if (this.coverUploadLoading) {
-        this.coverImg = null
-        this.coverUploadLoading = false
+        this.coverImg = null;
+        this.coverUploadLoading = false;
       }
     },
     clipCircleImg(imgSrc) {
-      return new Promise(resolve => {
-        const canvas = document.getElementById('cropper-canvas')
-        const ctx = canvas.getContext('2d')
-        const img = new Image()
-        img.src = imgSrc
+      return new Promise((resolve) => {
+        const canvas = document.getElementById("cropper-canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.src = imgSrc;
         img.onload = () => {
-          console.log(img.width, img.height)
-          const cw = canvas.width = img.width
-          const ch = canvas.height = img.height
-          ctx.beginPath()
-          ctx.arc(cw / 2, ch / 2, ch / 2, 0, Math.PI * 2)
-          ctx.closePath()
-          ctx.clip()
-          ctx.drawImage(img, 0, 0)
-        }
+          console.log(img.width, img.height);
+          const cw = (canvas.width = img.width);
+          const ch = (canvas.height = img.height);
+          ctx.beginPath();
+          ctx.arc(cw / 2, ch / 2, ch / 2, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+          ctx.drawImage(img, 0, 0);
+        };
         const timer = setInterval(function () {
           if (img.complete) {
-            clearInterval(timer)
-            resolve(canvas)
+            clearInterval(timer);
+            resolve(canvas);
           }
-        }, 50)
-      })
+        }, 50);
+      });
     },
-    completeCropAndUpload () {
+    completeCropAndUpload() {
       if (this.logoUploadLoading) {
         this.$refs.cropper.getCropData(async (data) => {
-          const canvas = await this.clipCircleImg(data)
-          this.logoPreviewSrc = canvas.toDataURL('image/png')
-          this.cropperModal = false
-          canvas.toBlob(async data => {
+          const canvas = await this.clipCircleImg(data);
+          this.logoPreviewSrc = canvas.toDataURL("image/png");
+          this.cropperModal = false;
+          canvas.toBlob(async (data) => {
             try {
-              this.form.icon = await uploadImage(data)
-              this.logoUploadLoading = false
+              this.form.icon = await uploadImage(data);
+              this.logoUploadLoading = false;
             } catch (e) {
-              this.$bvToast.toast(this.$t('tip.picUploadFail'), {
-                title: this.$t('tip.tips'),
+              this.$bvToast.toast(this.$t("tip.picUploadFail"), {
+                title: this.$t("tip.tips"),
                 autoHideDelay: 5000,
-                variant: 'warning'
-              })
-              this.logo = null
-              this.form.icon = null
-              this.logoUploadLoading = false
+                variant: "warning",
+              });
+              this.logo = null;
+              this.form.icon = null;
+              this.logoUploadLoading = false;
             }
-          })
-        })
+          });
+        });
       } else {
         this.$refs.cropper.getCropData((data) => {
-          this.coverPreviewSrc = data
-          this.cropperModal = false
-        })
+          this.coverPreviewSrc = data;
+          this.cropperModal = false;
+        });
         this.$refs.cropper.getCropBlob(async (data) => {
           try {
-            this.form.poster = await uploadImage(data)
-            this.coverUploadLoading = false
+            this.form.poster = await uploadImage(data);
+            this.coverUploadLoading = false;
           } catch (e) {
-            this.$bvToast.toast(this.$t('tip.picUploadFail'), {
-              title: this.$t('tip.tips'),
+            this.$bvToast.toast(this.$t("tip.picUploadFail"), {
+              title: this.$t("tip.tips"),
               autoHideDelay: 5000,
-              variant: 'warning'
-            })
-            this.coverImg = null
-            this.form.poster = null
+              variant: "warning",
+            });
+            this.coverImg = null;
+            this.form.poster = null;
           }
-        })
+        });
       }
     },
-    clickEdit () {
-      this.type = this.form.name ? 'edit' : 'create'
+
+    async updateLogo(file) {
+      if (!this.logo) return;
+      this.logoUploadLoading = true;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
     },
-    async updateLogo (file) {
-      if (!this.logo) return
-      this.logoUploadLoading = true
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
+    clickEdit() {
+      this.type = this.form.name ? "edit" : "create";
+    },
+    async updateLogo(file) {
+      if (!this.logo) return;
+      this.logoUploadLoading = true;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
       reader.onload = (res) => {
-        this.cropperImgSrc = res.target.result
-        this.cropperModal = true
-        this.cropFixedNumber = [1, 1]
-        this.cropImgSize = [200, 200]
-      }
+        this.cropperImgSrc = res.target.result;
+        this.cropperModal = true;
+        this.cropFixedNumber = [1, 1];
+        this.cropImgSize = [200, 200];
+      };
     },
-    async updateCover (file) {
-      if (!this.coverImg) return
-      this.coverUploadLoading = true
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
+    async updateCover(file) {
+      if (!this.coverImg) return;
+      this.coverUploadLoading = true;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
       reader.onload = (res) => {
-        this.cropperImgSrc = res.target.result
-        this.cropperModal = true
-        this.cropFixedNumber = [30, 7]
-        this.cropImgSize = [1200, 280]
-      }
+        this.cropperImgSrc = res.target.result;
+        this.cropperModal = true;
+        this.cropFixedNumber = [30, 7];
+        this.cropImgSize = [1200, 280];
+      };
     },
     valideInfos() {
       const { name, website, description, icon, poster } = this.form;
       let tips = null;
+      return true;
       if (website && website.length > 0) {
-        const regUrl = '(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]';
-        const res = website.match(regUrl)
-        console.log({res});
+        const regUrl =
+          "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
+        const res = website.match(regUrl);
+        console.log({ res });
         if (!res) {
-          tips = this.$t("tip.needRightUrl")
+          tips = this.$t("tip.needRightUrl");
           this.$bvToast.toast(tips, {
             title: this.$t("tip.tips"),
             autoHideDelay: 5000,
@@ -493,8 +517,8 @@ export default {
 
       if (!name || name.length === 0) {
         tips = this.$t("tip.needName");
-      } else if(name && name.length > 16){
-        tips = this.$t("tip.communityNameLimit", {count: 16})
+      } else if (name && name.length > 16) {
+        tips = this.$t("tip.communityNameLimit", { count: 16 });
       } else if (!description || description.length === 0) {
         tips = this.$t("tip.needDescription");
       } else if (!icon || icon.length === 0) {
@@ -527,7 +551,11 @@ export default {
           title: this.$t("tip.tips"),
           variant: "success",
         });
-        await Promise.all([getAllCommunities(true), getMyCommunityInfo(true), monitorCommunity()])
+        await Promise.all([
+          getAllCommunities(true),
+          getMyCommunityInfo(true),
+          monitorCommunity(),
+        ]);
         await sleep(1);
         this.$router.replace("/community-setting/staking");
       } catch (e) {

@@ -1,235 +1,241 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import VerticalLayout from '@/layout/VerticalLayout'
-import HorizontalLayout from '@/layout/HorizontalLayout'
-import Blog from '../views/Blog/Blog'
-import CommunityBlog from '../views/Blog/CommunityBlog'
-import CrowdIndex from '../views/CrowdStaking/Index'
-import Wallet from '../views/Wallet/Wallet'
-import BSCWallet from '../views/Wallet/BSC'
-import PolkadotWallet from '../views/Wallet/Polkadot'
-import KusamaWallet from '../views/Wallet/Kusama'
-import SteemWallet from '../views/Wallet/Steem'
-import HiveWallet from '../views/Wallet/Hive'
-import CrowdStaking from '../views/CrowdStaking/CrowdStaking'
-import CrowdLoan from '../views/CrowdStaking/CrowdLoan'
-import CommunityIndex from '../views/Community/Index'
-import Community from '../views/Community/Community'
-import CreateEconomy from '@/views/Community/CreateEconomy'
-import AddPool from '@/views/Community/AddPool'
-import UpdatePool from '@/views/Community/UpdatePool'
-import Register from '@/views/RegisterAsset/Register'
-import RegisterCtoken from '@/views/RegisterAsset/RegisterCtoken'
-import NativeAsset from '@/views/RegisterAsset/NativeAsset'
-import CrossChainAsset from '@/views/RegisterAsset/CrossChainAsset'
-import CommunityInfo from '@/views/Community/CommunityInfo'
-import CommunityDetailInfo from '@/views/Community/CommunityDetailInfo'
-import Delegate from '@/views/CrowdStaking/Delegate'
-import CrowdNominate from '@/views/CrowdStaking/CrowdNominate'
-import Tutorials from '@/views/Community/Tutorials'
-import Nps from '@/views/Nps/Nps'
-import CommunityTokens from '@/views/Community/CommunityTokens'
-import CommunitySettingIndex from '@/views/CommunitySetting/Index'
-import AssetSetting from '@/views/CommunitySetting/AssetSetting'
-import StakingSetting from '@/views/CommunitySetting/StakingSetting'
-import SocialSetting from '@/views/CommunitySetting/SocialSetting'
-import VoteSetting from '@/views/CommunitySetting/VoteSetting'
-import CreateProposal from '@/views/Nps/CreateProposal'
-import NpsIndex from '@/views/Nps/Index'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import VerticalLayout from "@/layout/VerticalLayout";
+import HorizontalLayout from "@/layout/HorizontalLayout";
+import Blog from "../views/Blog/Blog";
+import CommunityBlog from "../views/Blog/CommunityBlog";
+import CrowdIndex from "../views/CrowdStaking/Index";
+import Wallet from "../views/Wallet/Wallet";
+import BSCWallet from "../views/Wallet/BSC";
+import PolkadotWallet from "../views/Wallet/Polkadot";
+import KusamaWallet from "../views/Wallet/Kusama";
+import SteemWallet from "../views/Wallet/Steem";
+import HiveWallet from "../views/Wallet/Hive";
+import CrowdStaking from "../views/CrowdStaking/CrowdStaking";
+import CrowdLoan from "../views/CrowdStaking/CrowdLoan";
+import CommunityIndex from "../views/Community/Index";
+import Community from "../views/Community/Community";
+import CreateEconomy from "@/views/Community/CreateEconomy";
+import AddPool from "@/views/Community/AddPool";
+import UpdatePool from "@/views/Community/UpdatePool";
+import ProposalCreate from "@/views/Community/ProposalCreate";
+import Register from "@/views/RegisterAsset/Register";
+import RegisterCtoken from "@/views/RegisterAsset/RegisterCtoken";
+import NativeAsset from "@/views/RegisterAsset/NativeAsset";
+import CrossChainAsset from "@/views/RegisterAsset/CrossChainAsset";
+import CommunityInfo from "@/views/Community/CommunityInfo";
+import CommunityDetailInfo from "@/views/Community/CommunityDetailInfo";
+import Delegate from "@/views/CrowdStaking/Delegate";
+import CrowdNominate from "@/views/CrowdStaking/CrowdNominate";
+import Tutorials from "@/views/Community/Tutorials";
+import Nps from "@/views/Nps/Nps";
 
-Vue.use(VueRouter)
+import CommunityTokens from "@/views/Community/CommunityTokens";
+import CommunitySettingIndex from "@/views/CommunitySetting/Index";
+import AssetSetting from "@/views/CommunitySetting/AssetSetting";
+import StakingSetting from "@/views/CommunitySetting/StakingSetting";
+import SocialSetting from "@/views/CommunitySetting/SocialSetting";
+import VoteSetting from "@/views/CommunitySetting/VoteSetting";
+import CreateProposal from "@/views/Nps/CreateProposal";
+import NpsIndex from "@/views/Nps/Index";
+
+import ProposalSpace from "@/views/Community/ProposalSpace";
+import Proposal from "@/views/Community/Proposal";
+import CommunityProposalConfig from "@/views/Community/CommunityProposalConfig";
+
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'HorizontalLayout',
+    path: "/",
+    name: "HorizontalLayout",
     component: HorizontalLayout,
     children: [
       {
-        path: '/',
-        name: 'index',
-        redirect: '/community'
+        path: "/",
+        name: "index",
+        redirect: "/community"
       },
       {
-        path: '/wallet',
-        redirect: '/wallet/bsc',
+        path: "/wallet",
+        redirect: "/wallet/bsc",
         component: Wallet,
         children: [
           {
-            path: 'bsc',
-            name: 'BSCWallet',
+            path: "bsc",
+            name: "BSCWallet",
             component: BSCWallet
           },
           {
-            path: 'polkadot',
-            name: 'PolkadotWallet',
+            path: "polkadot",
+            name: "PolkadotWallet",
             component: PolkadotWallet
           },
           {
-            path: 'kusama',
-            name: 'PolkadotWallet',
+            path: "kusama",
+            name: "PolkadotWallet",
             component: KusamaWallet
           },
           {
-            path: 'steem',
-            name: 'SteemWallet',
+            path: "steem",
+            name: "SteemWallet",
             component: SteemWallet
           },
           {
-            path: 'hive',
-            name: 'HiveWallet',
+            path: "hive",
+            name: "HiveWallet",
             component: HiveWallet
           }
         ]
       },
       {
-        path: '/crowdstaking',
+        path: "/crowdstaking",
         component: CrowdIndex,
-        redirect: '/crowdstaking/deposite',
+        redirect: "/crowdstaking/deposite",
         children: [
           {
-            path: 'crowdloan',
-            name: 'crowdloan',
+            path: "crowdloan",
+            name: "crowdloan",
             component: CrowdLoan
           },
           {
-            path: 'nominate',
-            name: 'nominate',
+            path: "nominate",
+            name: "nominate",
             component: CrowdNominate
           },
           {
-            path: 'delegate',
-            name: 'delegate',
+            path: "delegate",
+            name: "delegate",
             component: Delegate
           },
           {
-            path: 'deposite',
-            name: 'deposite',
+            path: "deposite",
+            name: "deposite",
             component: CrowdStaking
           }
         ]
       },
       {
-        path: '/blog',
+        path: "/blog",
         component: Blog
       },
       {
-        path: '/nps',
+        path: "/nps",
         component: NpsIndex,
-        redirect: '/nps/nps',
+        redirect: "/nps/nps",
         children: [
           {
-            path: 'nps',
+            path: "nps",
             component: Nps
           },
           {
-            path: 'create-proposal',
+            path: "create-proposal",
             component: CreateProposal
           }
         ]
       },
       {
-        path: 'community',
+        path: "community",
         component: CommunityIndex,
-        redirect: '/community/community-list',
+        redirect: "/community/community-list",
         children: [
           {
-            path: 'community-list',
+            path: "community-list",
             component: Community,
             meta: { slideBar: true }
           },
           {
-            path: 'community-token',
+            path: "community-token",
             component: CommunityTokens,
             meta: { slideBar: true }
           },
           {
-            path: 'tutorials',
+            path: "tutorials",
             component: Tutorials
           },
           {
-            path: 'detail-info',
+            path: "detail-info",
             component: CommunityDetailInfo
           },
           {
-            path: 'create-economy',
+            path: "create-economy",
             component: CreateEconomy
           },
           {
-            path: 'register-ctoken',
-            name: 'register-ctoken',
+            path: "register-ctoken",
+            name: "register-ctoken",
             component: RegisterCtoken
-          },
+          }
         ]
       },
       {
-        path: '/community-setting',
-        name: 'community-setting',
+        path: "/community-setting",
+        name: "community-setting",
         component: CommunitySettingIndex,
-        redirect: '/community-setting/profile',
+        redirect: "/community-setting/profile",
         children: [
           {
-            path: 'tutorials',
-            name: 'tutorials',
+            path: "tutorials",
+            name: "tutorials",
             component: Tutorials
           },
           {
-            path: 'profile',
-            name: 'profile',
+            path: "profile",
+            name: "profile",
             component: CommunityInfo,
             meta: { slideBar: true }
           },
           {
-            path: 'asset',
-            name: 'asset',
+            path: "asset",
+            name: "asset",
             component: AssetSetting,
             meta: { slideBar: true }
           },
           {
-            path: 'register',
+            path: "register",
             component: Register,
             meta: { slideBar: true },
             children: [
               {
-                path: 'native',
+                path: "native",
                 component: NativeAsset,
                 props: route => ({
                   tokenAddress: route.query.tokenAddress
                 })
               },
               {
-                path: 'cross-chain-asset',
+                path: "cross-chain-asset",
                 component: CrossChainAsset
               }
             ]
           },
           {
-            path: 'staking',
-            name: 'staking',
+            path: "staking",
+            name: "staking",
             component: StakingSetting,
             meta: { slideBar: true }
           },
           {
-            path: 'social',
-            name: 'social',
+            path: "social",
+            name: "social",
             component: SocialSetting,
             meta: { slideBar: true }
           },
           {
-            path: 'vote',
-            name: 'vote',
+            path: "vote",
+            name: "vote",
             component: VoteSetting,
             meta: { slideBar: true }
           },
           {
-            path: 'update-pool',
-            name: 'update-pool',
+            path: "update-pool",
+            name: "update-pool",
             component: UpdatePool,
             meta: { slideBar: true }
           },
           {
-            path: 'add-pool',
-            name: 'add-pool',
+            path: "add-pool",
+            name: "add-pool",
             component: AddPool,
             meta: { slideBar: true }
           }
@@ -238,91 +244,107 @@ const routes = [
     ]
   },
   {
-    path: '/specify',
-    name: 'vertical-layout',
+    path: "/specify",
+    name: "vertical-layout",
     component: VerticalLayout,
-    redirect: 'specify/staking',
+    redirect: "specify/staking",
     children: [
       {
-        path: 'wallet',
-        redirect: 'wallet/bsc',
+        path: "wallet",
+        redirect: "wallet/bsc",
         component: Wallet,
         children: [
           {
-            path: 'bsc',
-            name: 'BSCWallet',
+            path: "bsc",
+            name: "BSCWallet",
             component: BSCWallet
           },
           {
-            path: 'polkadot',
-            name: 'PolkadotWallet',
+            path: "polkadot",
+            name: "PolkadotWallet",
             component: PolkadotWallet
           },
           {
-            path: 'kusama',
-            name: 'PolkadotWallet',
+            path: "kusama",
+            name: "PolkadotWallet",
             component: KusamaWallet
           },
           {
-            path: 'steem',
-            name: 'SteemWallet',
+            path: "steem",
+            name: "SteemWallet",
             component: SteemWallet
           },
           {
-            path: 'hive',
-            name: 'HiveWallet',
+            path: "hive",
+            name: "HiveWallet",
             component: HiveWallet
           }
         ]
       },
       {
-        path: 'staking',
+        path: "staking",
         component: CommunityDetailInfo
       },
       {
-        path: 'blog',
+        path: "blog",
         component: CommunityBlog
       },
       {
-        path: 'nps',
+        path: "nps",
         component: NpsIndex,
-        redirect: 'nps/nps',
+        redirect: "nps/nps",
         children: [
           {
-            path: 'nps',
+            path: "nps",
             component: Nps
           },
           {
-            path: 'create-proposal',
+            path: "create-proposal",
             component: CreateProposal
           }
         ]
+      },
+      {
+        path: "proposal-space/:key",
+        component: ProposalSpace
+      },
+      {
+        path: "proposal-space/:key/proposal",
+        component: Proposal
+      },
+      {
+        path: "proposal-space/:key/proposal-create",
+        component: ProposalCreate
+      },
+      {
+        path: "community-proposal-config/:key",
+        component: CommunityProposalConfig
       }
     ]
   }
-]
+];
 
 const router = new VueRouter({
-  linkActiveClass: 'active',
+  linkActiveClass: "active",
   routes
-})
+});
 
 router.beforeEach((to, from, next) => {
   if (to.query.id) {
-    next()
-  } else if (to.matched[0].path === '/specify' && from.query.id) {
+    next();
+  } else if (to.matched[0].path === "/specify" && from.query.id) {
     next({
       path: to.path,
       query: {
         id: from.query.id
       }
-    })
-  } else if (to.matched[0].path === '/specify' && !from.query.id) {
+    });
+  } else if (to.matched[0].path === "/specify" && !from.query.id) {
     next({
-      path: '/'
-    })
+      path: "/"
+    });
   } else {
-    next()
+    next();
   }
-})
-export default router
+});
+export default router;

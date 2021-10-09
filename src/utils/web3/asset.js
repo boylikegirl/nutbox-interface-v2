@@ -514,6 +514,7 @@ export const deployERC20 = async ({
 }, isMintable, callback) => {
   return new Promise(async (resolve, reject) => {
     try {
+      debugger
       const contract = await getContract('ERC20Factory', null, false)
       let tokenDeploying = store.state.web3.tokenDeploying
       if (tokenDeploying){

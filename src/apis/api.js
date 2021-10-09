@@ -138,6 +138,12 @@ export const getProposalInfo = async id =>
 export const getAllPools = async (communityId = null) =>
   get(BACKEND_API_URL + "/pool/getAll", { id: communityId });
 
+export const insertVote = async params =>
+  post(BACKEND_API_URL + "/vote/insert", params);
+
+export const getAllVote = async proposalId =>
+  get(BACKEND_API_URL + "/vote/get", { proposalId: proposalId });
+
 // ============================================ strategies ============================================
 const SNAPSHOT_SCORE_API_URL = "http://localhost:3003";
 //const SNAPSHOT_SCORE_API_URL = "https://score.snapshot.org";

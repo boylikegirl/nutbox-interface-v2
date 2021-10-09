@@ -18,7 +18,6 @@ import Community from "../views/Community/Community";
 import CreateEconomy from "@/views/Community/CreateEconomy";
 import AddPool from "@/views/Community/AddPool";
 import UpdatePool from "@/views/Community/UpdatePool";
-import ProposalCreate from "@/views/Community/ProposalCreate";
 import Register from "@/views/RegisterAsset/Register";
 import RegisterCtoken from "@/views/RegisterAsset/RegisterCtoken";
 import NativeAsset from "@/views/RegisterAsset/NativeAsset";
@@ -29,7 +28,6 @@ import Delegate from "@/views/CrowdStaking/Delegate";
 import CrowdNominate from "@/views/CrowdStaking/CrowdNominate";
 import Tutorials from "@/views/Community/Tutorials";
 import Nps from "@/views/Nps/Nps";
-
 import CommunityTokens from "@/views/Community/CommunityTokens";
 import CommunitySettingIndex from "@/views/CommunitySetting/Index";
 import AssetSetting from "@/views/CommunitySetting/AssetSetting";
@@ -38,10 +36,6 @@ import SocialSetting from "@/views/CommunitySetting/SocialSetting";
 import VoteSetting from "@/views/CommunitySetting/VoteSetting";
 import CreateProposal from "@/views/Nps/CreateProposal";
 import NpsIndex from "@/views/Nps/Index";
-
-import ProposalSpace from "@/views/Community/ProposalSpace";
-import Proposal from "@/views/Community/Proposal";
-import CommunityProposalConfig from "@/views/Community/CommunityProposalConfig";
 
 Vue.use(VueRouter);
 
@@ -238,6 +232,22 @@ const routes = [
             name: "add-pool",
             component: AddPool,
             meta: { slideBar: true }
+          },
+          {
+            path: "proposal-space/proposal/:key",
+            component: Proposal
+          },
+          {
+            path: "proposal-space/:key",
+            component: ProposalSpace
+          },
+          {
+            path: "proposal-space/:key/proposal-create",
+            component: ProposalCreate
+          },
+          {
+            path: "community-proposal-config/:key",
+            component: CommunityProposalConfig
           }
         ]
       }
@@ -303,22 +313,6 @@ const routes = [
             component: CreateProposal
           }
         ]
-      },
-      {
-        path: "proposal-space/:key",
-        component: ProposalSpace
-      },
-      {
-        path: "proposal-space/:key/proposal",
-        component: Proposal
-      },
-      {
-        path: "proposal-space/:key/proposal-create",
-        component: ProposalCreate
-      },
-      {
-        path: "community-proposal-config/:key",
-        component: CommunityProposalConfig
       }
     ]
   }

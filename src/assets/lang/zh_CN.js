@@ -238,14 +238,17 @@ module.exports = {
     communityNameLimit: "社区名字不能超过{count}个字",
     needRightUrl: "请填写正确的网页链接",
     selectCowdloan: "请选择一个众贷项目",
-
     inputRightBlogTag: "请输入正确的steem社区标签，如：hive-12345。",
     withdrawSuccess: "收获成功",
     deploying: "部署中，可能会消耗较长时间，请耐心等候",
     stopPoolOk: "已暂停矿池",
     removePoolOk: "已删除矿池",
     tryWithdrawOk: "清理成功",
-    stopPoolTips: "停止矿池前需将矿池挖矿比例设置为0！"
+    stopPoolTips: "停止矿池前需将矿池挖矿比例设置为0！",
+    strategyError: "策略异常",
+    completeCommunityProposalConfigSuccess: "提案配置完成",
+    completeProposalSuccess: "提案完成",
+    completeVoteSuccess: "投票成功"
   },
   nps: {
     nps: "提案改善",
@@ -426,6 +429,7 @@ module.exports = {
     proposalStart: "开始时间",
     proposalEnd: "结束时间",
     proposalBody: "详情",
+    proposalBodyPreview: "预览",
     proposalBodyInput: "请填写提案详情",
     proposalNetwork: "网络",
     proposalNetworkInput: "请选择网络",
@@ -444,6 +448,15 @@ module.exports = {
     proposalValidation: "验证",
     proposalValidationInput: "请选择验证",
     proposalOnlyMembers: "只允许成员发起提案",
+    proposalAgreeBtn: "赞成",
+    proposalDisagreeBtn: "反对",
+    proposalOnlyMembers: "只允许成员发起提案",
+    propsalSureVote: "确认投票",
+    propsalVoteRight: "您的投票权",
+    propsalVoteRemind: '您确认"{0}"吗?',
+    propsalVoteStatusWaitStart: "未开始",
+    propsalVoteStatusDoing: "正在投票",
+    propsalVoteStatusEnd: "已结束",
     editProposalConfigBtn: "提案配置",
     editStrategy: "编辑策略",
     validationWarning: {

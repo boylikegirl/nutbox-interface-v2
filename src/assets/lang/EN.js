@@ -273,7 +273,11 @@ module.exports = {
     stopPoolOk: "Pool has been stopped",
     removePoolOk: "Pool has been removed",
     tryWithdrawOk: "Redeem success.",
-    stopPoolTips: "Need set pool ratio to 0 before stop pool."
+    stopPoolTips: "Need set pool ratio to 0 before stop pool.",
+    strategyError: "Strategy Error",
+    completeCommunityProposalConfigSuccess: "Community proposal config success",
+    completeProposalSuccess: "Proposal success",
+    completeVoteSuccess: "Vote success"
   },
   nps: {
     nps: "Governance",
@@ -462,6 +466,7 @@ module.exports = {
     proposalStart: "Please input start time",
     proposalEnd: "Please input end time",
     proposalBody: "Detail",
+    proposalBodyPreview: "Preview",
     proposalBodyInput: "Please input detail",
     proposalNetwork: "Network",
     proposalNetworkInput: "Please select Network",
@@ -479,7 +484,15 @@ module.exports = {
     proposalThresholdInput: "Please input threshold",
     proposalValidation: "Validation",
     proposalValidationInput: "Please input validation",
+    proposalAgreeBtn: "agree",
+    proposalDisagreeBtn: "disagree",
     proposalOnlyMembers: "Allow only members to submit a proposal ",
+    propsalSureVote: "Are sure",
+    propsalVoteRight: "Your voting rights",
+    propsalVoteRemind: "Are you sure you {0}?",
+    propsalVoteStatusWaitStart: "Wait",
+    propsalVoteStatusDoing: "Voting",
+    propsalVoteStatusEnd: "End",
     editProposalConfigBtn: "ProposalConfig",
     editStrategy: "Edit Strategy",
     validationWarning: {

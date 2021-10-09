@@ -36,6 +36,9 @@ import SocialSetting from "@/views/CommunitySetting/SocialSetting";
 import VoteSetting from "@/views/CommunitySetting/VoteSetting";
 import CreateProposal from "@/views/Nps/CreateProposal";
 import NpsIndex from "@/views/Nps/Index";
+import ProposalSpace from "@/views/Community/ProposalSpace";
+import Proposal from "@/views/Community/Proposal";
+import CommunityProposalConfig from "@/views/Community/CommunityProposalConfig";
 
 Vue.use(VueRouter);
 
@@ -48,7 +51,7 @@ const routes = [
       {
         path: "/",
         name: "index",
-        redirect: "/community"
+        redirect: "/community",
       },
       {
         path: "/wallet",
@@ -58,29 +61,29 @@ const routes = [
           {
             path: "bsc",
             name: "BSCWallet",
-            component: BSCWallet
+            component: BSCWallet,
           },
           {
             path: "polkadot",
             name: "PolkadotWallet",
-            component: PolkadotWallet
+            component: PolkadotWallet,
           },
           {
             path: "kusama",
             name: "PolkadotWallet",
-            component: KusamaWallet
+            component: KusamaWallet,
           },
           {
             path: "steem",
             name: "SteemWallet",
-            component: SteemWallet
+            component: SteemWallet,
           },
           {
             path: "hive",
             name: "HiveWallet",
-            component: HiveWallet
-          }
-        ]
+            component: HiveWallet,
+          },
+        ],
       },
       {
         path: "/crowdstaking",
@@ -90,28 +93,28 @@ const routes = [
           {
             path: "crowdloan",
             name: "crowdloan",
-            component: CrowdLoan
+            component: CrowdLoan,
           },
           {
             path: "nominate",
             name: "nominate",
-            component: CrowdNominate
+            component: CrowdNominate,
           },
           {
             path: "delegate",
             name: "delegate",
-            component: Delegate
+            component: Delegate,
           },
           {
             path: "deposite",
             name: "deposite",
-            component: CrowdStaking
-          }
-        ]
+            component: CrowdStaking,
+          },
+        ],
       },
       {
         path: "/blog",
-        component: Blog
+        component: Blog,
       },
       {
         path: "/nps",
@@ -120,13 +123,13 @@ const routes = [
         children: [
           {
             path: "nps",
-            component: Nps
+            component: Nps,
           },
           {
             path: "create-proposal",
-            component: CreateProposal
-          }
-        ]
+            component: CreateProposal,
+          },
+        ],
       },
       {
         path: "community",
@@ -136,31 +139,31 @@ const routes = [
           {
             path: "community-list",
             component: Community,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "community-token",
             component: CommunityTokens,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "tutorials",
-            component: Tutorials
+            component: Tutorials,
           },
           {
             path: "detail-info",
-            component: CommunityDetailInfo
+            component: CommunityDetailInfo,
           },
           {
             path: "create-economy",
-            component: CreateEconomy
+            component: CreateEconomy,
           },
           {
             path: "register-ctoken",
             name: "register-ctoken",
-            component: RegisterCtoken
-          }
-        ]
+            component: RegisterCtoken,
+          },
+        ],
       },
       {
         path: "/community-setting",
@@ -171,19 +174,19 @@ const routes = [
           {
             path: "tutorials",
             name: "tutorials",
-            component: Tutorials
+            component: Tutorials,
           },
           {
             path: "profile",
             name: "profile",
             component: CommunityInfo,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "asset",
             name: "asset",
             component: AssetSetting,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "register",
@@ -193,65 +196,65 @@ const routes = [
               {
                 path: "native",
                 component: NativeAsset,
-                props: route => ({
-                  tokenAddress: route.query.tokenAddress
-                })
+                props: (route) => ({
+                  tokenAddress: route.query.tokenAddress,
+                }),
               },
               {
                 path: "cross-chain-asset",
-                component: CrossChainAsset
-              }
-            ]
+                component: CrossChainAsset,
+              },
+            ],
           },
           {
             path: "staking",
             name: "staking",
             component: StakingSetting,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "social",
             name: "social",
             component: SocialSetting,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "vote",
             name: "vote",
             component: VoteSetting,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "update-pool",
             name: "update-pool",
             component: UpdatePool,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "add-pool",
             name: "add-pool",
             component: AddPool,
-            meta: { slideBar: true }
+            meta: { slideBar: true },
           },
           {
             path: "proposal-space/proposal/:key",
-            component: Proposal
+            component: Proposal,
           },
           {
             path: "proposal-space/:key",
-            component: ProposalSpace
+            component: ProposalSpace,
           },
           {
             path: "proposal-space/:key/proposal-create",
-            component: ProposalCreate
+            component: ProposalCreate,
           },
           {
             path: "community-proposal-config/:key",
-            component: CommunityProposalConfig
-          }
-        ]
-      }
-    ]
+            component: CommunityProposalConfig,
+          },
+        ],
+      },
+    ],
   },
   {
     path: "/specify",
@@ -267,37 +270,37 @@ const routes = [
           {
             path: "bsc",
             name: "BSCWallet",
-            component: BSCWallet
+            component: BSCWallet,
           },
           {
             path: "polkadot",
             name: "PolkadotWallet",
-            component: PolkadotWallet
+            component: PolkadotWallet,
           },
           {
             path: "kusama",
             name: "PolkadotWallet",
-            component: KusamaWallet
+            component: KusamaWallet,
           },
           {
             path: "steem",
             name: "SteemWallet",
-            component: SteemWallet
+            component: SteemWallet,
           },
           {
             path: "hive",
             name: "HiveWallet",
-            component: HiveWallet
-          }
-        ]
+            component: HiveWallet,
+          },
+        ],
       },
       {
         path: "staking",
-        component: CommunityDetailInfo
+        component: CommunityDetailInfo,
       },
       {
         path: "blog",
-        component: CommunityBlog
+        component: CommunityBlog,
       },
       {
         path: "nps",
@@ -306,21 +309,21 @@ const routes = [
         children: [
           {
             path: "nps",
-            component: Nps
+            component: Nps,
           },
           {
             path: "create-proposal",
-            component: CreateProposal
-          }
-        ]
-      }
-    ]
-  }
+            component: CreateProposal,
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
   linkActiveClass: "active",
-  routes
+  routes,
 });
 
 router.beforeEach((to, from, next) => {
@@ -330,12 +333,12 @@ router.beforeEach((to, from, next) => {
     next({
       path: to.path,
       query: {
-        id: from.query.id
-      }
+        id: from.query.id,
+      },
     });
   } else if (to.matched[0].path === "/specify" && !from.query.id) {
     next({
-      path: "/"
+      path: "/",
     });
   } else {
     next();
